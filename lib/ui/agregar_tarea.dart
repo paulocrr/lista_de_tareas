@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AgregarTarea extends StatefulWidget {
+  final void Function(String) presionarAgregar;
   const AgregarTarea({
+    required this.presionarAgregar,
     super.key,
   });
 
@@ -46,7 +48,12 @@ class _AgregarTareaState extends State<AgregarTarea> {
           ElevatedButton.icon(
             onPressed: () {
               final formularioValido = idForm.currentState?.validate() ?? false;
-              print(textEditingController.text);
+              if (formularioValido) {
+                widget.presionarAgregar(textEditingController.text);
+
+                textEditingController.clear();
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
             },
             label: Text('Agregar'),
             icon: Icon(Icons.add),
@@ -54,5 +61,11 @@ class _AgregarTareaState extends State<AgregarTarea> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 }

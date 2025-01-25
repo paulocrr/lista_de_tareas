@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:lista_de_tareas/models/tarea.dart';
 
 class ItemDeTarea extends StatefulWidget {
+  final Tarea tarea;
+  final void Function(Tarea) alBorrar;
+
   const ItemDeTarea({
+    required this.tarea,
+    required this.alBorrar,
     super.key,
   });
 
@@ -10,32 +17,34 @@ class ItemDeTarea extends StatefulWidget {
 }
 
 class _ItemDeTareaState extends State<ItemDeTarea> {
-  var estaMarcado = false;
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         leading: Checkbox(
-          value: estaMarcado,
+          value: widget.tarea.terminada,
           activeColor: Colors.red,
           onChanged: (value) {
             setState(() {
-              estaMarcado = value ?? false;
+              widget.tarea.terminada = value ?? false;
             });
           },
         ),
         title: Text(
-          'Tarea 1',
+          widget.tarea.descripcion,
           style: TextStyle(
-            decoration: estaMarcado == true
+            decoration: widget.tarea.terminada == true
                 ? TextDecoration.lineThrough
                 : TextDecoration.none,
             decorationColor: Colors.blue,
           ),
         ),
-        subtitle: Text('19/01/2025'),
+        subtitle:
+            Text(DateFormat('d MMMM,y').format(widget.tarea.fechaDeCreacion)),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            widget.alBorrar(widget.tarea);
+          },
           icon: Icon(
             Icons.delete,
             color: Colors.red,
